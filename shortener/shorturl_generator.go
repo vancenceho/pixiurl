@@ -3,7 +3,9 @@ package shortener
 import (
 	"crypto/sha256"
 	"fmt"
+	"math/big"
 	"os"
+
 	"github.com/itchyny/base58-go"
 )
 
