@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	handlers "github.com/vancenceho/pixiurl/handler"
@@ -26,7 +27,11 @@ func main() {
 	// NOTE: store initialization happens here
 	store.InitializeStore()
 	
-	err := r.Run(":9808")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	err := r.Run(":" + port)
 
 	if err != nil {
 		panic(fmt.Sprintf("Failed to start the web server - Error: %v", err))
