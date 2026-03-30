@@ -3,6 +3,8 @@ package store
 import (
 	"context"
 	"fmt"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -24,12 +26,41 @@ var (
 // purged automatically from the cache and stored back in RDBMS whenever the cache is full.
 const cacheDuration = 6 * time.Hour
 
+func getRedisAddress() string {
+	if addr := os.Getenv("REDIS_ADDR"); addr != "" {
+		return addr
+	}
+
+	if host := os.Getenv("REDIS_HOST"); host != "" {
+		fmt.Println("Using REDIS_HOST environment variable: ", host)
+		return host + ":6379"
+	}
+
+	return "localhost:6379"
+}
+
+func getRedisDB() int {
+	raw := os.Getenv("REDIS_DB")
+
+	if raw == "" {
+		return 0
+	}
+
+	n, err := strconv.Atoi(raw)
+
+	if err != nil {
+		return 0
+	}
+
+	return n
+}
+
 // Initialize the store service and return a store pointer
 func InitializeStore() *StorageService {
 	redisClient := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-		Password: "",
-		DB: 0,
+		Addr: getRedisAddress(),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB: getRedisDB(),					// getRedisDB() returns the Redis DB number to use
 	})
 
 	pong, err := redisClient.Ping(ctx).Result()
