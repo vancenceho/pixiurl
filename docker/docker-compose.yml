@@ -1,0 +1,20 @@
+name: pixiurl
+services:
+  redis:
+    container_name: pixiurl-redis-server
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  app:
+    container_name: pixiurl-go-server
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:8080" # map port 80 to port 8080 in the container
+    depends_on:
+      - redis
+    environment:
+      - PORT=8080
+      - REDIS_ADDR=redis:6379
