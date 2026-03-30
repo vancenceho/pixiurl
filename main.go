@@ -19,7 +19,7 @@ func main() {
 		handlers.CreateShortUrl(c)
 	})
 
-	r.GET("api/v1/shorturl/:shortUrl", func(c *gin.Context) {
+	r.GET("/:shortUrl", func(c *gin.Context) {
 		handlers.HandleShortUrlRedirect(c)
 	})
 

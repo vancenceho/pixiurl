@@ -30,11 +30,11 @@ func CreateShortUrl(c *gin.Context) {
 	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl, creationRequest.UserId)
 
 	// Return the short URL
-	host := "http://localhost:9808/api/v1/"
+	host := "http://pixi.url"
 
 	c.JSON(200, gin.H{
 		"message": "short url created successfully",
-		"short_url": host + "shorturl/" + shortUrl,
+		"short_url": host + "/" + shortUrl,
 	})
 }
 
