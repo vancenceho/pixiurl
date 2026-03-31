@@ -7,6 +7,8 @@ services:
 
   app:
     container_name: pixiurl-go-server
+    env_file:
+      - .env
     build:
       context: ..
       dockerfile: docker/Dockerfile
@@ -15,6 +17,3 @@ services:
       - "80:8080" # map port 80 to port 8080 in the container
     depends_on:
       - redis
-    environment:
-      - PORT=8080
-      - REDIS_ADDR=redis:6379

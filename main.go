@@ -24,6 +24,9 @@ func main() {
 		handlers.HandleShortUrlRedirect(c)
 	})
 
+	// Note: database initialization happens here; before Redis initialization
+	store.InitializeDB()
+
 	// NOTE: store initialization happens here
 	store.InitializeStore()
 	

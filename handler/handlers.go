@@ -42,11 +42,22 @@ func HandleShortUrlRedirect(c *gin.Context) {
 	// Get the short URL from the request parameters
 	shortUrl := c.Params.ByName("shortUrl")
 
-	// Retrieve the initial URL from the database
-	initialUrl := store.RetrieveInitialUrl(shortUrl)
+	initialUrl, err := store.RetrieveInitialUrl(shortUrl)
+	if err != nil {
+		// true system error (redis/postgres error)
+		c.JSON(http.StatusInternalServerError, gin.H{"error | internal server error: ": err.Error()})
+
+		return
+	}
+
+	if initialUrl == "" {
+		// not found in redis or postgres
+		c.JSON(http.StatusNotFound, gin.H{"error | short url not found: ": shortUrl})
+
+		return
+	}
 
 	// Redirect to the initial URL
 	c.Redirect(302, initialUrl)
+
 }
-
-
